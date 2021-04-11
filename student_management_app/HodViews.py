@@ -55,8 +55,8 @@ def admin_home(request):
 
     staffs = Staffs.objects.all()
     for staff in staffs:
-        subject_ids = Subjects.objects.filter(staff_id=staff.admin.id)
-        attendance = Attendance.objects.filter(group_id__in=subject_ids).count() # should be fixed
+        group_ids = staff.group_id.all()
+        attendance = Attendance.objects.filter(group_id__in=group_ids).count() # should be fixed
         leaves = LeaveReportStaff.objects.filter(staff_id=staff.id, leave_status=1).count()
         staff_attendance_present_list.append(attendance)
         staff_attendance_leave_list.append(leaves)
@@ -788,10 +788,10 @@ def staff_leave_reject(request, leave_id):
 
 
 def admin_view_attendance(request):
-    subjects = Subjects.objects.all()
+    groups = Group.objects.all()
     session_years = SessionYearModel.objects.all()
     context = {
-        "subjects": subjects,
+        "groups": groups,
         "session_years": session_years
     }
     return render(request, "hod_template/admin_view_attendance.html", context)

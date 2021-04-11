@@ -36,17 +36,17 @@ def staff_home(request):
     subject_count = subjects.count()
 
     # Fetch All Attendance Count
-    attendance_count = Attendance.objects.filter(subject_id__in=subjects).count()
+    attendance_count = Attendance.objects.filter(group_id__in=current_staff_groups).count()
     # Fetch All Approve Leave
     staff = Staffs.objects.get(admin=request.user.id)
     leave_count = LeaveReportStaff.objects.filter(staff_id=staff.id, leave_status=1).count()
 
     #Fetch Attendance Data by Subjects
-    subject_list = []
+    group_list = []
     attendance_list = []
-    for subject in subjects:
-        attendance_count1 = Attendance.objects.filter(subject_id=subject.id).count()
-        subject_list.append(subject.subject_name)
+    for group in current_staff_groups:
+        attendance_count1 = Attendance.objects.filter(group_id=group.id).count()
+        group_list.append(group.group_name)
         attendance_list.append(attendance_count1)
 
     group_ids = [group.id for group in current_staff_groups]
@@ -66,7 +66,7 @@ def staff_home(request):
         "attendance_count": attendance_count,
         "leave_count": leave_count,
         "subject_count": subject_count,
-        "subject_list": subject_list,
+        "group_list": group_list,
         "attendance_list": attendance_list,
         "student_list": student_list,
         "attendance_present_list": student_list_attendance_present,
@@ -172,6 +172,7 @@ def save_attendance_data(request):
     # Use getlist to access HTML Array/List Input Data
     student_ids = request.POST.get("student_ids")
     group_id = request.POST.get("group_id")
+
     attendance_date = request.POST.get("attendance_date")
     session_year_id = request.POST.get("session_year_id")
 
@@ -179,11 +180,9 @@ def save_attendance_data(request):
     session_year_model = SessionYearModel.objects.get(id=session_year_id)
 
     json_student = json.loads(student_ids)
-    # print(dict_student[0]['id'])
 
-    print(group_model.group_name, attendance_date)
     try:
-        # First Attendance Data is Saved on Attendance Model
+    # First Attendance Data is Saved on Attendance Model
         attendance = Attendance(group_id=group_model, attendance_date=attendance_date, session_year_id=session_year_model)
         attendance.save()
 
@@ -200,10 +199,10 @@ def save_attendance_data(request):
 
 
 def staff_update_attendance(request):
-    subjects = Subjects.objects.filter(staff_id=request.user.id)
+    groups = request.user.staffs.group_id.all()
     session_years = SessionYearModel.objects.all()
     context = {
-        "subjects": subjects,
+        "groups": groups,
         "session_years": session_years
     }
     return render(request, "staff_template/update_attendance_template.html", context)
@@ -213,17 +212,17 @@ def get_attendance_dates(request):
     
 
     # Getting Values from Ajax POST 'Fetch Student'
-    subject_id = request.POST.get("subject")
+    group_id = request.POST.get("group")
     session_year = request.POST.get("session_year_id")
 
     # Students enroll to Course, Course has Subjects
     # Getting all data from subject model based on subject_id
-    subject_model = Subjects.objects.get(id=subject_id)
+    group_model = Group.objects.get(id=group_id)
 
     session_model = SessionYearModel.objects.get(id=session_year)
 
     # students = Students.objects.filter(course_id=subject_model.course_id, session_year_id=session_model)
-    attendance = Attendance.objects.filter(subject_id=subject_model, session_year_id=session_model)
+    attendance = Attendance.objects.filter(group_id=group_model, session_year_id=session_model)
 
     # Only Passing Student Id and Student Name Only
     list_data = []
@@ -318,10 +317,10 @@ def staff_profile_update(request):
 
 
 def staff_add_result(request):
-    subjects = Subjects.objects.filter(staff_id=request.user.id)
+    groups = request.user.staffs.group_id.all()
     session_years = SessionYearModel.objects.all()
     context = {
-        "subjects": subjects,
+        "groups": groups,
         "session_years": session_years,
     }
     return render(request, "staff_template/add_result_template.html", context)
@@ -335,23 +334,23 @@ def staff_add_result_save(request):
         student_admin_id = request.POST.get('student_list')
         assignment_marks = request.POST.get('assignment_marks')
         exam_marks = request.POST.get('exam_marks')
-        subject_id = request.POST.get('subject')
+        group_id = request.POST.get('group')
 
         student_obj = Students.objects.get(admin=student_admin_id)
-        subject_obj = Subjects.objects.get(id=subject_id)
+        group_obj = Group.objects.get(id=group_id)
 
         try:
             # Check if Students Result Already Exists or not
-            check_exist = StudentResult.objects.filter(subject_id=subject_obj, student_id=student_obj).exists()
+            check_exist = StudentResult.objects.filter(group_id=group_id, student_id=student_obj).exists()
             if check_exist:
-                result = StudentResult.objects.get(subject_id=subject_obj, student_id=student_obj)
+                result = StudentResult.objects.get(group_id=group_obj, student_id=student_obj)
                 result.subject_assignment_marks = assignment_marks
                 result.subject_exam_marks = exam_marks
                 result.save()
                 messages.success(request, "Result Updated Successfully!")
                 return redirect('staff_add_result')
             else:
-                result = StudentResult(student_id=student_obj, subject_id=subject_obj, subject_exam_marks=exam_marks, subject_assignment_marks=assignment_marks)
+                result = StudentResult(student_id=student_obj, group_id=group_obj, subject_exam_marks=exam_marks, subject_assignment_marks=assignment_marks)
                 result.save()
                 messages.success(request, "Result Added Successfully!")
                 return redirect('staff_add_result')

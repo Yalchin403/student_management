@@ -157,13 +157,13 @@
             })
 
             //Code for Bar Chart
-            var subjects = {{ subject_name|safe }}
+            var groups = {{ group_name|safe }}
             var data_present = {{ data_present }}
             var data_absent = {{ data_absent }}
 
             //Dataset for Bar Chart
             var areaChartData = {
-            labels  : subjects,
+            labels  : groups,
             datasets: [
                 {
                 label               : 'Present in Class',
