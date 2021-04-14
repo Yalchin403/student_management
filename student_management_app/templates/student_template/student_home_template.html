@@ -1,7 +1,7 @@
 {% extends 'student_template/base_template.html' %}
 
 {% block page_title %}
-    Student Home
+    Tələbə Ana Səhifəsi
 {% endblock page_title %}
 
 {% block main_content %}
@@ -19,27 +19,12 @@
                     <div class="inner">
                         <h3>{{ total_attendance }}</h3>
 
-                        <p>Total Attendance</p>
+                        <p>Ümumi Qeydiyyat</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                     </div>
-                    <a href="{% url 'student_view_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-                <!-- ./col -->
-                <div class="col-lg-3 col-6">
-                    <!-- small box -->
-                    <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3>{{ attendance_absent }}</h3>
-
-                        <p>Absent</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-stats-bars"></i>
-                    </div>
-                    <a href="{% url 'student_view_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{% url 'student_view_attendance' %}" class="small-box-footer">Daha Çox <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -47,14 +32,29 @@
                     <!-- small box -->
                     <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>{{ attendance_present }}</h3>
+                        <h3>{{ attendance_absent }}</h3>
 
-                        <p>Present</p>
+                        <p>İştirak Etməyib</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                     </div>
-                    <a href="{% url 'student_view_attendance' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{% url 'student_view_attendance' %}" class="small-box-footer">Daha Çox <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>{{ attendance_present }}</h3>
+
+                        <p>İştirak Edib</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="{% url 'student_view_attendance' %}" class="small-box-footer">Daha Çox <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -64,12 +64,12 @@
                     <div class="inner">
                         <h3>{{ total_subjects }}</h3>
 
-                        <p>Total Subjects</p>
+                        <p>Ümumi Fənlər</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="#" class="small-box-footer">Daha Çox <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->
@@ -81,7 +81,7 @@
                     <!-- PIE CHART -->
                     <div class="card card-danger">
                     <div class="card-header">
-                        <h3 class="card-title">Total Attendance Chart</h3>
+                        <h3 class="card-title">Ümumi Qeydiyyat</h3>
 
                         <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -101,7 +101,7 @@
                     <!-- BAR CHART -->
                     <div class="card card-success">
                     <div class="card-header">
-                        <h3 class="card-title">Attendance Statistics by Subjects</h3>
+                        <h3 class="card-title">Fənlərə Görə Qeydiyyat</h3>
 
                         <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -131,8 +131,8 @@
            //Code for Pie Chart
             var pieData        = {
             labels: [
-                'ABSENT', 
-                'PRESENT', 
+                'İştirak Etməyib', 
+                'İştirak Edib', 
             ],
             datasets: [
                 {
@@ -166,7 +166,7 @@
             labels  : groups,
             datasets: [
                 {
-                label               : 'Present in Class',
+                label               : 'Dərsdə İştirak Edib',
                 backgroundColor     : 'rgba(60,141,188,0.9)',
                 borderColor         : 'rgba(60,141,188,0.8)',
                 pointRadius          : false,
@@ -177,7 +177,7 @@
                 data                : data_present
                 },
                 {
-                label               : 'Absent in Class',
+                label               : 'Dərsdə İştirak Etməyib',
                 backgroundColor     : 'rgba(210, 214, 222, 1)',
                 borderColor         : 'rgba(210, 214, 222, 1)',
                 pointRadius         : false,

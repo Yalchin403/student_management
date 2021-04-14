@@ -107,19 +107,20 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'student_management_app/static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 #For Custom USER
 AUTH_USER_MODEL = "student_management_app.CustomUser"

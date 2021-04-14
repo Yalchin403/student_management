@@ -3,7 +3,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="{% url 'admin_home' %}" class="brand-link">
-        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+        <img src="{% static 'dist/img/ladyBug.jpg' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
         <span class="brand-text font-weight-light">Uğur Hazırlıq Mərkəzi</span>
       </a>
@@ -13,7 +13,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+            <img src="{% static 'dist/img/default-user.jpg' %}" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="info">
             <a href="{% url 'admin_profile' %}" class="d-block">{{ user.first_name }} {{ user.last_name }}</a>
@@ -31,7 +31,7 @@
               <a href="{{ admin_home }}" class="nav-link {% if request.path == admin_home %} active {% endif %}">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
-                  Home
+                  Ev
                 </p>
               </a>
             </li>
@@ -42,7 +42,7 @@
               <a href="{{ manage_staff }}" class="nav-link {% if request.path == manage_staff %} active {% endif %} {% if request.path == edit_staff %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
-                  Manage Staff
+                  Heyəti İdarə Et
                 </p>
               </a>
             </li>
@@ -52,7 +52,7 @@
               <a href="{{ add_staff }}" class="nav-link {% if request.path == add_staff %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Add Staff
+                  Heyət Artır
                 </p>
               </a>
             </li>
@@ -63,7 +63,7 @@
               <a href="{{ manage_student }}" class="nav-link {% if request.path == manage_student %} active {% endif %} {% if request.path == edit_student %} active {% endif %}">
                 <i class="nav-icon fas fa-user-graduate"></i>
                 <p>
-                  Manage Student
+                  Tələbələri İdarə Et
                 </p>
               </a>
             </li>
@@ -73,7 +73,7 @@
               <a href="{{ add_student }}" class="nav-link {% if request.path == add_student %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Add Student
+                  Tələbə Artır
                 </p>
               </a>
             </li>
@@ -84,7 +84,7 @@
               <a href="{{ manage_group }}" class="nav-link {% if request.path == manage_group %} active {% endif %} {% if request.path == edit_group %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard"></i>
                 <p>
-                  Manage Group
+                  Qrupları İdarə Et
                 </p>
               </a>
             </li>
@@ -94,7 +94,7 @@
               <a href="{{ add_group }}" class="nav-link {% if request.path == add_group %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Add Group
+                  Qrup Artir
                 </p>
               </a>
             </li>
@@ -105,7 +105,7 @@
               <a href="{{ manage_subject }}" class="nav-link {% if request.path == manage_subject %} active {% endif %} {% if request.path == edit_subject %} active {% endif %}">
                 <i class="nav-icon fas fa-book"></i>
                 <p>
-                  Manage Subject
+                  Fənləri İdarə Et
                 </p>
               </a>
             </li>
@@ -115,7 +115,7 @@
               <a href="{{ add_subject }}" class="nav-link {% if request.path == add_subject %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Add Subject
+                  Fənn Artır
                 </p>
               </a>
             </li>
@@ -127,7 +127,7 @@
               <a href="{{ manage_session }}" class="nav-link {% if request.path == manage_session %} active {% endif %} {% if request.path == edit_session %} active {% endif %}">
                 <i class="nav-icon fas fa-graduation-cap"></i>
                 <p>
-                  Manage Session 
+                  Sessiyaları İdarə Et 
                 </p>
               </a>
             </li>
@@ -137,7 +137,7 @@
               <a href="{{ add_session }}" class="nav-link {% if request.path == add_session %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Add Session
+                  Sessiya Artır
                 </p>
               </a>
             </li>
@@ -148,7 +148,7 @@
               <a href="{{ admin_view_attendance }}" class="nav-link {% if request.path == admin_view_attendance %} active {% endif %}">
                 <i class="nav-icon fas fa-calendar-alt"></i>
                 <p>
-                  View Attendance
+                  Qeydiyyata Bax
                 </p>
               </a>
             </li>
@@ -158,7 +158,7 @@
               <a href="{{ student_feedback_message }}" class="nav-link {% if request.path == student_feedback_message %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Student Feedback
+                  Tələbə Rəyləri
                 </p>
               </a>
             </li>
@@ -168,7 +168,7 @@
               <a href="{{ staff_feedback_message }}" class="nav-link {% if request.path == staff_feedback_message %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Stafff Feedback
+                  Heyət Rəyləri
                 </p>
               </a>
             </li>
@@ -178,7 +178,7 @@
               <a href="{{ student_leave_view }}" class="nav-link {% if request.path == student_leave_view %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Student Leave
+                  Tərk Edən Tələbələr
                 </p>
               </a>
             </li>
@@ -188,7 +188,7 @@
               <a href="{{ staff_leave_view }}" class="nav-link {% if request.path == staff_leave_view %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Staff Leave
+                  Tərk Edən Heyətlər
                 </p>
               </a>
             </li>

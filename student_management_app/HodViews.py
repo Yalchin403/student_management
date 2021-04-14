@@ -6,9 +6,10 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 import json
+from .color_generator import generate_colors
 
 from student_management_app.models import CustomUser, Staffs, Group, Subjects, Students, SessionYearModel, FeedBackStudent, FeedBackStaffs, LeaveReportStudent, LeaveReportStaff, Attendance, AttendanceReport
-from .forms import AddStudentForm, EditStudentForm, AddStaffForm
+from .forms import AddStudentForm, EditStudentForm, AddStaffForm, EditStaffForm
 
 
 def admin_home(request):
@@ -31,6 +32,9 @@ def admin_home(request):
         students = group.students_set.all().count()
         group_name_list.append(group.group_name)
         student_count_list_in_group.append(students) # needs to be passed
+    
+    len_group = len(group_name_list)
+    group_colors = generate_colors(len_group)
 
     staff_all = Staffs.objects.all()
     staff_name_group_list = []
@@ -39,14 +43,20 @@ def admin_home(request):
         groups = staff.group_id.all().count()
         group_count_list.append(groups) # needs to be passed
         staff_name_group_list.append(staff.admin.first_name)
+
+    len_staff_name = len(staff_name_group_list)
+    staff_name_colors = generate_colors(len_staff_name)
+
     
     subject_all = Subjects.objects.all()
-    subject_list = []
+    subject_name_list = []
     student_count_list_in_subject = []
     for subject in subject_all:
         student_count = subject.students_set.all().count()
-        subject_list.append(subject.subject_name)
+        subject_name_list.append(subject.subject_name)
         student_count_list_in_subject.append(student_count)
+    
+    subject_colors = generate_colors(len(subject_name_list))
     
     # For Saffs
     staff_attendance_present_list=[]
@@ -79,47 +89,31 @@ def admin_home(request):
 
     group_ojs = Group.objects.all()
 
-    # context={
-    #     "staff_name_group_list": staff_name_group_list,
-    #     "group_ojs": group_ojs,
-    #     "all_student_count": all_student_count,
-    #     "subject_count": subject_count,
-    #     "group_count": group_count,
-    #     "staff_count": staff_count,
-    #     "group_name_list": group_name_list,
-    #     "group_count_list": group_count_list,
-    #     "student_count_list_in_group": student_count_list_in_group,
-    #     "subject_list": subject_list,
-    #     "student_count_list_in_subject": student_count_list_in_subject,
-    #     "staff_attendance_present_list": staff_attendance_present_list,
-    #     "staff_attendance_leave_list": staff_attendance_leave_list,
-    #     "staff_name_list": staff_name_list,
-    #     "student_attendance_present_list": student_attendance_present_list,
-    #     "student_attendance_leave_list": student_attendance_leave_list,
-    #     "student_name_list": student_name_list,
-    # }
-
     context={
-            "staff_name_group_list": [staff_name_group_list],
-            "group_ojs": group_ojs,
-            "all_student_count": 12,
-            "subject_count": subject_count,
-            "group_count": group_count,
-            "staff_count": 23,
-            "group_name_list": group_name_list,
-            "group_count_list": group_count_list,
-            "student_count_list_in_group": student_count_list_in_group,
-            "subject_list": subject_list,
-            "student_count_list_in_subject": student_count_list_in_subject,
-            "staff_attendance_present_list": staff_attendance_present_list,
-            "staff_attendance_leave_list": staff_attendance_leave_list,
-            "staff_name_list": staff_name_list,
-            "student_attendance_present_list": student_attendance_present_list,
-            "student_attendance_leave_list": student_attendance_leave_list,
-            "student_name_list": student_name_list,
-            "subject_all": subject_all,
-        }
-
+        "subject_all":subject_all,
+        "student_vs_staff": [all_student_count, staff_count],
+        "student_vs_staff_lables": ["Tələbələr", "Heyət"],
+        "staff_name_group_list": staff_name_group_list,
+        "staff_name_colors": staff_name_colors,
+        "group_ojs": group_ojs,
+        "subject_count": subject_count,
+        "group_count": group_count,
+        "group_name_list": group_name_list,
+        "group_count_list": group_count_list,
+        "student_count_list_in_group": student_count_list_in_group,
+        "group_colors": group_colors,
+        "subject_name_list": subject_name_list,
+        "student_count_list_in_subject": student_count_list_in_subject,
+        "subject_colors": subject_colors,
+        "staff_attendance_present_list": staff_attendance_present_list,
+        "staff_attendance_leave_list": staff_attendance_leave_list,
+        "staff_name_list": staff_name_list,
+        "student_attendance_present_list": student_attendance_present_list,
+        "student_attendance_leave_list": student_attendance_leave_list,
+        "student_name_list": student_name_list,
+        "all_student_count":all_student_count,
+        "staff_count": staff_count,
+    }
 
     return render(request, "hod_template/home_content.html", context)
 
@@ -158,19 +152,19 @@ def add_staff_save(request):
             user.save()
             for group_obj in group_objs:
                     user.staffs.group_id.add(group_obj)
-            messages.success(request, "Saff Added Successfully!")
+            messages.success(request, "Heyət Artırıldı!")
             return redirect('add_staff')
 
         except:
-            messages.error(request, "Failed to Add Staff!")
+            messages.error(request, "Heyət Artırarkən Xəta Baş Verdi!")
             return redirect('add_staff')
-    messages.error(request, "Failed to Add Staff!")
+    messages.error(request, "Heyət Artırarkən Xəta Baş Verdi!")
     return redirect('add_staff')
 
 
 
 def manage_staff(request):
-    staffs = Staffs.objects.all()
+    staffs = Staffs.objects.all().order_by('admin__first_name')
     context = {
         "staffs": staffs
     }
@@ -184,14 +178,13 @@ def edit_staff(request, staff_id):
 
     request.session['staff_id'] = staff_id
     staff = Staffs.objects.get(admin=staff_id)
-    form = AddStaffForm()
+    form = EditStaffForm()
     # Filling the form with Data from Database
     form.fields['email'].initial = staff.admin.email
     form.fields['username'].initial = staff.admin.username
     form.fields['first_name'].initial = staff.admin.first_name
     form.fields['last_name'].initial = staff.admin.last_name
     form.fields['address'].initial = staff.address
-    form.fields['password'].initial = staff.admin.password
     form.fields['group_id'].initial = staff.group_id.all()
 
     context = {
@@ -209,9 +202,9 @@ def edit_staff_save(request):
     else:
         staff_id = request.session.get('staff_id')
         if staff_id == None:
-            return redirect('/manage_student')
+            return redirect('/manage_staff')
 
-        form = AddStaffForm(request.POST)
+        form = EditStaffForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
             username = form.cleaned_data['username']
@@ -228,7 +221,8 @@ def edit_staff_save(request):
                 user.last_name = last_name
                 user.email = email
                 user.username = username
-                user.set_password(password)
+                if password:
+                    user.set_password(password)
                 user.save()
 
                 # Then Update Staff Table
@@ -240,10 +234,10 @@ def edit_staff_save(request):
                 # Delete staff_id SESSION after the data is updated
                 del request.session['staff_id']
 
-                messages.success(request, "Staff Updated Successfully!")
+                messages.success(request, "Heyət Dəyişdirildi!")
                 return redirect('/edit_staff/'+staff_id)
             except:
-                messages.success(request, "Failed to Uupdate Student.")
+                messages.success(request, "Heyət Dəyişdirilərkən Xəta Baş Verdi!")
                 return redirect('/edit_staff/'+staff_id)
         else:
             return redirect('/edit_staff/'+staff_id)
@@ -255,10 +249,10 @@ def delete_staff(request, staff_id):
     staff = CustomUser.objects.get(id=staff_id)
     try:
         staff.delete()
-        messages.success(request, "Staff Deleted Successfully.")
+        messages.success(request, "Heyət Silindi!")
         return redirect('manage_staff')
     except:
-        messages.error(request, "Failed to Delete Staff.")
+        messages.error(request, "Heyət Silinərkən Xəta Baş Verdi!")
         return redirect('manage_staff')
 
 
@@ -277,10 +271,10 @@ def add_group_save(request):
         try:
             group_obj = Group(group_name=group_name)
             group_obj.save()
-            messages.success(request, "Group Added Successfully!")
+            messages.success(request, "Qrup Artırıldı!")
             return redirect('add_group')
         except:
-            messages.error(request, "Failed to Add Group!")
+            messages.error(request, "Qrup Artırılarkən Xəta Baş Verdi!")
             return redirect('add_group')
 
 
@@ -313,11 +307,11 @@ def edit_group_save(request):
             group.group_name = group_name
             group.save()
 
-            messages.success(request, "Group Updated Successfully.")
+            messages.success(request, "Qrup Dəyişdirildi!")
             return redirect('/edit_group/'+group_id)
 
         except:
-            messages.error(request, "Failed to Update Group.")
+            messages.error(request, "Qrup Dəyişdirilərkən Xəta Baş Verdi!")
             return redirect('/edit_group/'+group_id)
 
 
@@ -325,10 +319,10 @@ def delete_group(request, group_id):
     group = Group.objects.get(id=group_id)
     try:
         group.delete()
-        messages.success(request, "Group Deleted Successfully.")
+        messages.success(request, "Qrup Silindi!")
         return redirect('manage_group')
     except:
-        messages.error(request, "Failed to Delete Group.")
+        messages.error(request, "Qrup Silinərkən Xəta Baş Verdi!")
         return redirect('manage_group')
 
 
@@ -355,10 +349,10 @@ def add_session_save(request):
         try:
             sessionyear = SessionYearModel(session_start_year=session_start_year, session_end_year=session_end_year)
             sessionyear.save()
-            messages.success(request, "Session Year added Successfully!")
+            messages.success(request, "Sessiya İli Artırıldı!")
             return redirect("add_session")
         except:
-            messages.error(request, "Failed to Add Session Year")
+            messages.error(request, "Sessiya İli Artırılarkən Xəta Baş Verdi")
             return redirect("add_session")
 
 
@@ -385,10 +379,10 @@ def edit_session_save(request):
             session_year.session_end_year = session_end_year
             session_year.save()
 
-            messages.success(request, "Session Year Updated Successfully.")
+            messages.success(request, "Sessiya İli Dəyişdirildi!")
             return redirect('/edit_session/'+session_id)
         except:
-            messages.error(request, "Failed to Update Session Year.")
+            messages.error(request, "Sessiya İli Dəyişdirilərkən Xəta Baş Verdi!")
             return redirect('/edit_session/'+session_id)
 
 
@@ -396,10 +390,10 @@ def delete_session(request, session_id):
     session = SessionYearModel.objects.get(id=session_id)
     try:
         session.delete()
-        messages.success(request, "Session Deleted Successfully.")
+        messages.success(request, "Sessiya İli Silindi!")
         return redirect('manage_session')
     except:
-        messages.error(request, "Failed to Delete Session.")
+        messages.error(request, "Sessiya İli Silinərkən Xəta Baş Verdi!")
         return redirect('manage_session')
 
 
@@ -444,33 +438,33 @@ def add_student_save(request):
                 profile_pic_url = None
 
 
-            # try:
-            user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=3)
-            user.students.address = address
+            try:
+                user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=3)
+                user.students.address = address
 
-            session_year_obj = SessionYearModel.objects.get(id=session_year_id)
-            user.students.session_year_id = session_year_obj
+                session_year_obj = SessionYearModel.objects.get(id=session_year_id)
+                user.students.session_year_id = session_year_obj
 
-            user.students.gender = gender
-            user.students.profile_pic = profile_pic_url
-            user.save()
-            for subject_obj in subject_objs:
-                user.students.subject_id.add(subject_obj)
+                user.students.gender = gender
+                user.students.profile_pic = profile_pic_url
+                user.save()
+                for subject_obj in subject_objs:
+                    user.students.subject_id.add(subject_obj)
 
-            for group_obj in group_objs:
-                user.students.group_id.add(group_obj)
+                for group_obj in group_objs:
+                    user.students.group_id.add(group_obj)
 
-            messages.success(request, "Student Added Successfully!")
-            return redirect('add_student')
-            # except:
-            messages.error(request, "Failed to Add Student!")
-            return redirect('add_student')
+                messages.success(request, "Tələbə Artırıldı!")
+                return redirect('add_student')
+            except:
+                messages.error(request, "Tələbə Artırılarkən Xəta Baş Verdi!")
+                return redirect('add_student')
         else:
             return redirect('add_student')
 
 
 def manage_student(request):
-    students = Students.objects.all()
+    students = Students.objects.all().order_by('admin__first_name')
     context = {
         "students": students
     }
@@ -488,7 +482,6 @@ def edit_student(request, student_id):
     form.fields['username'].initial = student.admin.username
     form.fields['first_name'].initial = student.admin.first_name
     form.fields['last_name'].initial = student.admin.last_name
-    form.fields['password'].initial = student.admin.password
     form.fields['address'].initial = student.address
     form.fields['group_id'].initial = student.group_id.all()
     form.fields['subject_id'].initial = student.subject_id.all()
@@ -543,7 +536,8 @@ def edit_student_save(request):
                 user.last_name = last_name
                 user.email = email
                 user.username = username
-                user.set_password(password)
+                if password:
+                    user.set_password(password)
                 user.save()
 
                 # Then Update Students Table
@@ -566,10 +560,10 @@ def edit_student_save(request):
                 # Delete student_id SESSION after the data is updated
                 del request.session['student_id']
 
-                messages.success(request, "Student Updated Successfully!")
+                messages.success(request, "Tələbə Dəyişdirildi!")
                 return redirect('/edit_student/'+student_id)
             except:
-                messages.success(request, "Failed to Uupdate Student.")
+                messages.success(request, "Tələbə Dəyişdirilərkən Xəta Baş Verdi!")
                 return redirect('/edit_student/'+student_id)
         else:
             return redirect('/edit_student/'+student_id)
@@ -579,10 +573,10 @@ def delete_student(request, student_id):
     student = CustomUser.objects.get(id=student_id)
     try:
         student.delete()
-        messages.success(request, "Student Deleted Successfully.")
+        messages.success(request, "Tələbə Silindi!")
         return redirect('manage_student')
     except:
-        messages.error(request, "Failed to Delete Student.")
+        messages.error(request, "Tələbə Sİlinərkən Xəta Baş Verdi!")
         return redirect('manage_student')
 
 
@@ -609,10 +603,10 @@ def add_subject_save(request):
         try:
             subject = Subjects(subject_name=subject_name, price=price, staff_id=staff)
             subject.save()
-            messages.success(request, "Subject Added Successfully!")
+            messages.success(request, "Fənn Artırıdı!")
             return redirect('add_subject')
         except:
-            messages.error(request, "Failed to Add Subject!")
+            messages.error(request, "Fənn Artırılarkən Xəta Baş Verdi!")
             return redirect('add_subject')
 
 
@@ -655,12 +649,12 @@ def edit_subject_save(request):
             
             subject.save()
 
-            messages.success(request, "Subject Updated Successfully.")
+            messages.success(request, "Fənn Dəyişdirildi!")
             # return redirect('/edit_subject/'+subject_id)
             return HttpResponseRedirect(reverse("edit_subject", kwargs={"subject_id":subject_id}))
 
         except:
-            messages.error(request, "Failed to Update Subject.")
+            messages.error(request, "Fənn Dəyişdirilərkən Xəta Baş Verdi!")
             return HttpResponseRedirect(reverse("edit_subject", kwargs={"subject_id":subject_id}))
             # return redirect('/edit_subject/'+subject_id)
 
@@ -670,10 +664,10 @@ def delete_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
     try:
         subject.delete()
-        messages.success(request, "Subject Deleted Successfully.")
+        messages.success(request, "Fənn Silindi!")
         return redirect('manage_subject')
     except:
-        messages.error(request, "Failed to Delete Subject.")
+        messages.error(request, "Fənn Silinərkən Xəta Baş Verdi!")
         return redirect('manage_subject')
 
 
@@ -711,14 +705,16 @@ def student_feedback_message_reply(request):
     feedback_id = request.POST.get('id')
     feedback_reply = request.POST.get('reply')
 
-    try:
-        feedback = FeedBackStudent.objects.get(id=feedback_id)
-        feedback.feedback_reply = feedback_reply
-        feedback.save()
-        return HttpResponse("True")
+    if feedback_reply:
+        try:
+            feedback = FeedBackStudent.objects.get(id=feedback_id)
+            feedback.feedback_reply = feedback_reply
+            feedback.save()
+            return HttpResponse("True")
 
-    except:
-        return HttpResponse("False")
+        except:
+            return HttpResponse("False")
+    return HttpResponse("False")
 
 
 def staff_feedback_message(request):
@@ -733,15 +729,16 @@ def staff_feedback_message(request):
 def staff_feedback_message_reply(request):
     feedback_id = request.POST.get('id')
     feedback_reply = request.POST.get('reply')
+    if feedback_reply:
+        try:
+            feedback = FeedBackStaffs.objects.get(id=feedback_id)
+            feedback.feedback_reply = feedback_reply
+            feedback.save()
+            return HttpResponse("True")
 
-    try:
-        feedback = FeedBackStaffs.objects.get(id=feedback_id)
-        feedback.feedback_reply = feedback_reply
-        feedback.save()
-        return HttpResponse("True")
-
-    except:
-        return HttpResponse("False")
+        except:
+            return HttpResponse("False")
+    return HttpResponse("False")    
 
 
 def student_leave_view(request):
@@ -864,20 +861,10 @@ def admin_profile_update(request):
             if password != None and password != "":
                 customuser.set_password(password)
             customuser.save()
-            messages.success(request, "Profile Updated Successfully")
+            messages.success(request, "Profil Dəyişdirildi!")
             return redirect('admin_profile')
         except:
-            messages.error(request, "Failed to Update Profile")
+            messages.error(request, "Profil Dəyişdirilərkən Xəta Baş Verdi!")
             return redirect('admin_profile')
-    
-
-
-def staff_profile(request):
-    pass
-
-
-def student_profile(requtest):
-    pass
-
 
 

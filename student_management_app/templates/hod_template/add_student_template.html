@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Add Student
+    Tələbə Artır
 {% endblock page_title %}
 
 {% block main_content %}
@@ -16,12 +16,12 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add Student</h3>
+                        <h3 class="card-title">Tələbə Artır</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
                     {% url 'add_student_save' as action_path %}
-                    {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_path button_text="Add Student" %}
+                    {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_path button_text="Tələbə Artır" %}
 
                     </div>
                     <!-- /.card -->
@@ -54,11 +54,11 @@
 
                         if(response == "True"){
                             $(".email_error").remove();
-                            $("<span class='email_error' style='color: red; padding: 5px; font-weight: bold;'> Email Not Available. </span>").insertAfter("#id_email")
+                            $("<span class='email_error' style='color: red; padding: 5px; font-weight: bold;'> Bu Email Artıq İstifadə Olunub. </span>").insertAfter("#id_email")
                         }
                         else{
                             $(".email_error").remove();
-                            $("<span class='email_error' style='color: green; padding: 5px; font-weight: bold;'> Email Available. </span>").insertAfter("#id_email")
+                            $("<span class='email_error' style='color: green; padding: 5px; font-weight: bold;'> Bu Email İstifadə Olunmayıb. </span>").insertAfter("#id_email")
                         }
                     })
 
@@ -86,11 +86,11 @@
 
                         if(response == "True"){
                             $(".username_error").remove();
-                            $("<span class='username_error' style='color: red; padding: 5px; font-weight: bold;'> Username Not Available. </span>").insertAfter("#id_username")
+                            $("<span class='username_error' style='color: red; padding: 5px; font-weight: bold;'> Bu İstifadəçi Adı Artıq İstifadə Olunub. </span>").insertAfter("#id_username")
                         }
                         else{
                             $(".username_error").remove();
-                            $("<span class='username_error' style='color: green; padding: 5px; font-weight: bold;'> Username Available. </span>").insertAfter("#id_username")
+                            $("<span class='username_error' style='color: green; padding: 5px; font-weight: bold;'> Bu İstifadəçi Adı İstifadə Olunmayıb. </span>").insertAfter("#id_username")
                         }
                     })
 

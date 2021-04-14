@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Manage Staff
+    Heyəti İdarə Et
 {% endblock page_title %}
 
 {% block main_content %}
@@ -11,7 +11,7 @@
 <section class="content">
         <div class="container-fluid">
 
-            <a class="btn btn-primary" href="{% url 'add_staff' %}" role="button">+ Add Staff</a> <br/>&nbsp;
+            <a class="btn btn-primary" href="{% url 'add_staff' %}" role="button">+ Heyət Artır</a> <br/>&nbsp;
 
             {% if messages %}
                                 <div class="form-group">
@@ -44,11 +44,11 @@
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Staff Details</h3>
+                            <h3 class="card-title">Heyət Detalları</h3>
 
                             <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
-                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                                <input type="text" name="table_search" class="form-control float-right" placeholder="Heyət axtar">
 
                                 <div class="input-group-append">
                                 <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
@@ -62,14 +62,13 @@
                             <thead>
                                 <tr>
                                 <th>ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
+                                <th>Ad</th>
+                                <th>Soyad</th>
                                 <th>Email</th>
-                                <th>Address</th>
-                                <th>Last Login</th>
-                                <th>Date Joined</th>
-                                <th>Action</th>
+                                <th>Adres</th>
+                                <th>Son Giriş</th>
+                                <th>Qoşulma Tarixi</th>
+                                <th>İcra Et</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -78,14 +77,13 @@
                                 <td>{{ staff.admin.id }}</td>
                                 <td>{{ staff.admin.first_name }}</td>
                                 <td>{{ staff.admin.last_name }}</td>
-                                <td>{{ staff.admin.username }}</td>
                                 <td>{{ staff.admin.email }}</td>
                                 <td>{{ staff.address }}</td>
                                 <td>{{ staff.admin.last_login }}</td>
                                 <td>{{ staff.admin.date_joined }}</td>
                                 <td>
-                                    <a href="{% url 'edit_staff' staff.admin.id %}" class="btn btn-success">Edit</a> 
-                                    <a href="{% url 'delete_staff' staff.admin.id %}" class="btn btn-danger">Delete</a>
+                                    <a href="{% url 'edit_staff' staff.admin.id %}" class="btn btn-success">Dəyiş</a> 
+                                    <a href="{% url 'delete_staff' staff.admin.id %}" class="btn btn-danger">Sil</a>
                                 </td>
                                 </tr>
                                 {% endfor %}

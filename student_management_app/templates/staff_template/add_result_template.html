@@ -1,7 +1,7 @@
 {% extends 'staff_template/base_template.html' %}
 
 {% block page_title %}
-    Add Result
+    Nəticə Artır
 {% endblock page_title %}
 
 {% block main_content %}
@@ -18,7 +18,7 @@
                     {% csrf_token %}
                     <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add Result</h3>
+                        <h3 class="card-title">Nəticə Artır</h3>
                     </div>
                     <!-- /.card-header -->
 
@@ -51,7 +51,7 @@
                         <div class="card-body">
                            
                             <div class="form-group">
-                                <label>Group </label>
+                                <label>Qrup </label>
                                 <select class="form-control" name="group" id="group">
                                     {% for group in groups %}
                                         <option value="{{ group.id }}">{{ group.group_name }}</option>
@@ -60,7 +60,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Session Year </label>
+                                <label>Sessiya İli </label>
                                 <select class="form-control" name="session_year" id="session_year">
                                     {% for session_year in session_years %}
                                         <option value="{{ session_year.id }}">{{ session_year.session_start_year }} to {{ session_year.session_end_year }}</option>
@@ -73,7 +73,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="button" class="btn btn-primary" id="fetch_student">Fetch Student</button>
+                        <button type="button" class="btn btn-primary" id="fetch_student">Tələbələri Tap</button>
                         </div>
 
                         {% comment %} Displaying Students Here {% endcomment %}
@@ -115,7 +115,7 @@
                 var json_data=JSON.parse(response);
                 console.log(json_data)
                 //Displaying Attendance Date Input and Students Attendance
-                var div_data="<div class='form-group'><label>Student List</label> <select class='student_list form-control' name='student_list'>"
+                var div_data="<div class='form-group'><label>Tələbə Siyahısı</label> <select class='student_list form-control' name='student_list'>"
 
                 for(key in json_data)
                 {
@@ -127,23 +127,23 @@
                 div_data+="<div class='form-group'><div class='row'>";
 
                 div_data+="<div class='col-lg-6'>";
-                div_data+="<label>Assignment Marks : </label><input type='text'name='assignment_marks' class='form-control' placeholder='Assignment Marks' />";
+                div_data+="<label>Tapşırıq Qiyməti : </label><input type='text'name='assignment_marks' class='form-control' placeholder='Tapşırıq Qiyməti' />";
                 div_data+="</div>";
 
                 div_data+="<div class='col-lg-6'>";
-                div_data+="<label>Exam Marks : </label><input type='text'name='exam_marks' class='form-control' placeholder='Exam Marks' />";
+                div_data+="<label>İmtahan Qiyməti : </label><input type='text'name='exam_marks' class='form-control' placeholder='İmtahan Qiyməti' />";
                 div_data+="</div>";
 
                 div_data+="</div></div>";
 
                 div_data+="<div class='form-group'>";
-                div_data+="<button id='save_attendance' class='btn btn-success' type='submit'>Save Result</button>";
+                div_data+="<button id='save_attendance' class='btn btn-success' type='submit'>Yadda Saxla</button>";
                 div_data+="</div>";
                 $("#student_data").html(div_data);
 
             })
             .fail(function(){
-                alert("Error in Fetching Students.")
+                alert("Tələbələri Taparkən Xəta.")
             })
 
         })

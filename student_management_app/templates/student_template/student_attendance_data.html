@@ -32,7 +32,7 @@
 {% endblock custom_css %}
 
 {% block page_title %}
-    View Attendance Data
+    Qeydiyyat Tarixçəsinə Bax
 {% endblock page_title %}
 
 {% block main_content %}
@@ -47,7 +47,7 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Attendance Data for {{ group_obj.group_name }}</h3>
+                        <h3 class="card-title">{{ group_obj.group_name }} Qrupu Üçün Qeydiyyat Tarixçəsi</h3>
                     </div>
                     <!-- /.card-header -->
      
@@ -60,7 +60,7 @@
                                         <div class="col-lg-3 attendance_div_green">
                                             <b>Date : {{ attendance_report.attendance_id.attendance_date }}</b> <br/>
                                             
-                                                <b>[ Status : Present ]</b>
+                                                <b>[ Status : İştirak Edib ]</b>
                                             
                                         </div>
                                     
@@ -70,7 +70,7 @@
                                         <div class="col-lg-3 attendance_div_red">
                                             <b>Date : {{ attendance_report.attendance_id.attendance_date }}</b> <br/>
                                             
-                                                <b>[ Status : Absent ]</b>
+                                                <b>[ Status : İştirak Etməyib ]</b>
                                             
                                         </div>
 

@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 import json
+from .color_generator import generate_colors
 
 
 from student_management_app.models import CustomUser, Staffs, Group, Subjects, Students, SessionYearModel, Attendance, AttendanceReport, LeaveReportStaff, FeedBackStaffs, StudentResult
@@ -41,15 +42,16 @@ def staff_home(request):
     staff = Staffs.objects.get(admin=request.user.id)
     leave_count = LeaveReportStaff.objects.filter(staff_id=staff.id, leave_status=1).count()
 
-    #Fetch Attendance Data by Subjects
-    group_list = []
+    #Fetch Attendance Data by Group
+    group_name_list = []
     attendance_list = []
     for group in current_staff_groups:
         attendance_count1 = Attendance.objects.filter(group_id=group.id).count()
-        group_list.append(group.group_name)
+        group_name_list.append(group.group_name)
         attendance_list.append(attendance_count1)
 
-    group_ids = [group.id for group in current_staff_groups]
+    group_name_colors = generate_colors(len(group_name_list))
+
     students_attendance = Students.objects.all()    # should be fixed
     student_list = []
     student_list_attendance_present = []
@@ -62,15 +64,16 @@ def staff_home(request):
         student_list_attendance_absent.append(attendance_absent_count)
 
     context={
-        "students_count": students_count,
+        "leave_attendance_data": [attendance_count, leave_count],
         "attendance_count": attendance_count,
         "leave_count": leave_count,
+        "students_count": students_count,
         "subject_count": subject_count,
-        "group_list": group_list,
+        "group_name_list": group_name_list,
         "attendance_list": attendance_list,
+        "group_name_colors":group_name_colors,
         "student_list": student_list,
-        "attendance_present_list": student_list_attendance_present,
-        "attendance_absent_list": student_list_attendance_absent,
+        "student_attendance_data": [student_list_attendance_present, student_list_attendance_absent],
     }
     return render(request, "staff_template/staff_home_template.html", context)
 
@@ -104,19 +107,21 @@ def staff_apply_leave_save(request):
         leave_message = request.POST.get('leave_message')
 
         staff_obj = Staffs.objects.get(admin=request.user.id)
-        try:
-            leave_report = LeaveReportStaff(staff_id=staff_obj, leave_date=leave_date, leave_message=leave_message, leave_status=0)
-            leave_report.save()
-            messages.success(request, "Applied for Leave.")
-            return redirect('staff_apply_leave')
-        except:
-            messages.error(request, "Failed to Apply Leave")
-            return redirect('staff_apply_leave')
-
+        if leave_date and leave_message:
+            try:
+                leave_report = LeaveReportStaff(staff_id=staff_obj, leave_date=leave_date, leave_message=leave_message, leave_status=0)
+                leave_report.save()
+                messages.success(request, "Tərk etmə üçün müraciət edildi.")
+                return redirect('staff_apply_leave')
+            except:
+                messages.error(request, "Tərk etmə üçün müraciət edərkən xəta baş verdi.")
+                return redirect('staff_apply_leave')
+        messages.error(request, "Tərk etmə üçün müraciət edərkən xəta baş verdi.")
+        return redirect('staff_apply_leave')
 
 def staff_feedback(request):
     staff_obj = Staffs.objects.get(admin=request.user.id)
-    feedback_data = FeedBackStaffs.objects.filter(staff_id=staff_obj)
+    feedback_data = FeedBackStaffs.objects.filter(staff_id=staff_obj).order_by('-updated_at')
     context = {
         "feedback_data":feedback_data
     }
@@ -131,14 +136,17 @@ def staff_feedback_save(request):
         feedback = request.POST.get('feedback_message')
         staff_obj = Staffs.objects.get(admin=request.user.id)
 
+    if feedback:
         try:
             add_feedback = FeedBackStaffs(staff_id=staff_obj, feedback=feedback, feedback_reply="")
             add_feedback.save()
-            messages.success(request, "Feedback Sent.")
+            messages.success(request, "Rəy göndərildi.")
             return redirect('staff_feedback')
         except:
-            messages.error(request, "Failed to Send Feedback.")
+            messages.error(request, "Rəy göndərilərkən xəta baş verdi.")
             return redirect('staff_feedback')
+    messages.error(request, "Rəy göndərilərkən xəta baş verdi.")
+    return redirect('staff_feedback')
 
 
 # WE don't need csrf_token when using Ajax
@@ -308,10 +316,10 @@ def staff_profile_update(request):
             staff.address = address
             staff.save()
 
-            messages.success(request, "Profile Updated Successfully")
+            messages.success(request, "Profil Dəyişdirildi")
             return redirect('staff_profile')
         except:
-            messages.error(request, "Failed to Update Profile")
+            messages.error(request, "Profil Dəyişdirilərkən Xəta Baş Verdi")
             return redirect('staff_profile')
 
 
@@ -347,13 +355,13 @@ def staff_add_result_save(request):
                 result.subject_assignment_marks = assignment_marks
                 result.subject_exam_marks = exam_marks
                 result.save()
-                messages.success(request, "Result Updated Successfully!")
+                messages.success(request, "Nəticə yadda saxlanıldı!")
                 return redirect('staff_add_result')
             else:
                 result = StudentResult(student_id=student_obj, group_id=group_obj, subject_exam_marks=exam_marks, subject_assignment_marks=assignment_marks)
                 result.save()
-                messages.success(request, "Result Added Successfully!")
+                messages.success(request, "Nəticə yadda saxlanıldı!")
                 return redirect('staff_add_result')
         except:
-            messages.error(request, "Failed to Add Result!")
+            messages.error(request, "Nəticəni yadda saxlayarkən xəta baş verdi!")
             return redirect('staff_add_result')

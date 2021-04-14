@@ -1,7 +1,7 @@
 {% extends 'student_template/base_template.html' %}
 
 {% block page_title %}
-    View Attendance Data
+    Qeydiyyata Bax
 {% endblock page_title %}
 
 {% block main_content %}
@@ -16,7 +16,7 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">View Attendance</h3>
+                        <h3 class="card-title">Qeydiyyata Bax</h3>
                     </div>
                     <!-- /.card-header -->
 
@@ -51,7 +51,7 @@
                         <div class="card-body">
                            
                             <div class="form-group">
-                                <label>Group </label>
+                                <label>Qrup </label>
                                 <select class="form-control" name="group" id="group">
                                     {% for group in groups %}
                                         <option value="{{ group.id }}">{{ group.group_name }}</option>
@@ -62,14 +62,14 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label>Start Date </label>
+                                        <label>Başlama Vaxtı </label>
                                         <input type="date" class="form-control" name="start_date" />
                                     </div>
                                 </div>
                                 
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label>End Date </label>
+                                        <label>Bitmə Vaxtı </label>
                                         <input type="date" class="form-control" name="end_date" />
                                     </div>
                                 </div>
@@ -81,7 +81,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="submit" class="btn btn-primary" id="fetch_student">Fetch Attendance</button>
+                        <button type="submit" class="btn btn-primary" id="fetch_student">Qeydiyyatı Tap</button>
                         </div>
 
                         {% comment %} Displaying Students Here {% endcomment %}

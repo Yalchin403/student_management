@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Student Feedback
+    Tələbə Rəyləri
 {% endblock page_title %}
 
 {% block main_content %}
@@ -16,7 +16,7 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">Student Feedback</h3>
+                            <h3 class="card-title">Tələbə Rəyləri</h3>
                         </div>
                         <!-- /.card-header -->
 
@@ -25,12 +25,12 @@
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Student ID</th>
-                                    <th>Student Name</th>
-                                    <th>Student Session</th>
-                                    <th>Message</th>
-                                    <th>Sended On</th>
-                                    <th>Reply</th>
+                                    <th>Tələbə ID</th>
+                                    <th>Tələbə Adı</th>
+                                    <th>Tələbə Sessiyası</th>
+                                    <th>Mesaj</th>
+                                    <th>Göndərildi</th>
+                                    <th>Cavab</th>
                                 </tr>
                                 </thead>
 
@@ -45,7 +45,7 @@
                                     <td>{{ feedback.created_at }}</td>
                                     <td>
                                         {% if feedback.feedback_reply == "" %}
-                                            <button class="btn btn-success reply_open_modal" data-toggle="modal" data-target="#replyModal">Reply</button>
+                                            <button class="btn btn-success reply_open_modal" data-toggle="modal" data-target="#replyModal">Cavab Ver</button>
                                         {% else %}
                                             {{ feedback.feedback_reply }}
                                         {% endif %}
@@ -73,19 +73,19 @@
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Reply Feedback</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Rəyin Cavabı</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>Reply to: <b><span id="reply_name"></span></b></p>
+                <p>Cavab Ver: <b><span id="reply_name"></span></b></p>
                 <input type="hidden" id="reply_id" name="reply_id" />
                 <textarea class="form-control" rows="5" id="reply_message"></textarea>
             </div>
             <div class="modal-footer">
                 {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> {% endcomment %}
-                <button type="button" class="btn btn-primary btn-block" id="reply_button">Reply</button>
+                <button type="button" class="btn btn-primary btn-block" id="reply_button">Cavab Ver</button>
             </div>
             </div>
         </div>
@@ -133,11 +133,11 @@
                     
                     if(response=="True")
                     {
-                        alert("Reply Sent!")
+                        alert("Cavab Göndərildi!")
                     }
                     else
                     {
-                        alert("Failed to Send Reply!")
+                        alert("Cavab Göndərilərkən Xəta Baş Verdi!")
                     }
                     location.reload()
                     
@@ -145,7 +145,7 @@
                 })
 
                 .fail(function(){
-                    alert("Error in Sending Feedback Reply.")
+                    alert("Cavab Göndərilərkən Xəta Baş Verdi!")
                 })
 
             })

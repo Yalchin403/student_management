@@ -14,7 +14,7 @@ def student_home(request):
     attendance_present = AttendanceReport.objects.filter(student_id=student_obj, status=True).count()
     attendance_absent = AttendanceReport.objects.filter(student_id=student_obj, status=False).count()
 
-    total_subjects = student_obj.subject_id.all() #changed
+    total_subjects = student_obj.subject_id.all().count() #changed
 
     group_name = []
     data_present = []
@@ -76,10 +76,6 @@ def student_view_attendance_post(request):
         # Getting Attendance Report based on the attendance details obtained above
         attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, student_id=stud_obj)
 
-        # for attendance_report in attendance_reports:
-        #     print("Date: "+ str(attendance_report.attendance_id.attendance_date), "Status: "+ str(attendance_report.status))
-
-        # messages.success(request, "Attendacne View Success")
 
         context = {
             "group_obj": group_obj,
@@ -106,20 +102,22 @@ def student_apply_leave_save(request):
         leave_date = request.POST.get('leave_date')
         leave_message = request.POST.get('leave_message')
 
+    if leave_message and leave_date:
         student_obj = Students.objects.get(admin=request.user.id)
         try:
             leave_report = LeaveReportStudent(student_id=student_obj, leave_date=leave_date, leave_message=leave_message, leave_status=0)
             leave_report.save()
-            messages.success(request, "Applied for Leave.")
+            messages.success(request, "Tərk Etmə Üçün Müraciət Edildi.")
             return redirect('student_apply_leave')
         except:
-            messages.error(request, "Failed to Apply Leave")
+            messages.error(request, "Tərk Etmə Üçün Müraciət Edərkən Xəta Baş Verdi")
             return redirect('student_apply_leave')
-
+    messages.error(request, "Tərk Etmə Tarixini Və (ya) Səbəbini Boş Qoya Bilməzsiniz!")
+    return redirect('student_apply_leave')
 
 def student_feedback(request):
     student_obj = Students.objects.get(admin=request.user.id)
-    feedback_data = FeedBackStudent.objects.filter(student_id=student_obj)
+    feedback_data = FeedBackStudent.objects.filter(student_id=student_obj).order_by('-updated_at')
     context = {
         "feedback_data": feedback_data
     }
@@ -134,14 +132,18 @@ def student_feedback_save(request):
         feedback = request.POST.get('feedback_message')
         student_obj = Students.objects.get(admin=request.user.id)
 
+    if feedback:
+
         try:
             add_feedback = FeedBackStudent(student_id=student_obj, feedback=feedback, feedback_reply="")
             add_feedback.save()
-            messages.success(request, "Feedback Sent.")
+            messages.success(request, "Rəy Göndərildi.")
             return redirect('student_feedback')
         except:
-            messages.error(request, "Failed to Send Feedback.")
+            messages.error(request, "Rəy Göndərilərkən Xəta Baş Verdi.")
             return redirect('student_feedback')
+    messages.error(request, "Rəy yazdığınızdan Əmin Olun!")
+    return redirect('student_feedback')
 
 
 def student_profile(request):
