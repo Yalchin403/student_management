@@ -12,6 +12,13 @@ def home(request):
 
 
 def loginPage(request):
+    user = request.user
+    if user.is_authenticated:
+            if user.user_type == '1':
+                return redirect('admin_home')
+            elif user.user_type == '1':
+                return redirect('staff_home')
+            return redirect('student_home')
     return render(request, 'login.html')
 
 

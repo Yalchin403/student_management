@@ -42,31 +42,31 @@ class AddStaffForm(forms.Form):
 
 class EditStaffForm(forms.Form):
     email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
-    password = forms.CharField(required=False, label="Password", max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
-    first_name = forms.CharField(label="First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    last_name = forms.CharField(label="Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    password = forms.CharField(required=False, label="Parol (Boş buraxıla bilər)", max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
+    first_name = forms.CharField(label="Ad", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    last_name = forms.CharField(label="Soyad", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    username = forms.CharField(label="İstifadəçi Adı", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    address = forms.CharField(label="Adres", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     
     def __init__(self, *args, **kwargs):
         super(EditStaffForm, self).__init__(*args, **kwargs)
-        self.fields['group_id'] = forms.ModelMultipleChoiceField(label="Groups", queryset=Group.objects.all(), widget=forms.CheckboxSelectMultiple)
+        self.fields['group_id'] = forms.ModelMultipleChoiceField(label="Qruplar", queryset=Group.objects.all(), widget=forms.CheckboxSelectMultiple)
 
 class EditStudentForm(forms.Form):
     email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
-    first_name = forms.CharField(label="First Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    last_name = forms.CharField(label="Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    password = forms.CharField(required=False, label="Password (you can keep it empty)", max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
-    username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
-    address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    first_name = forms.CharField(label="Ad", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    last_name = forms.CharField(label="Soyad", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    password = forms.CharField(required=False, label="Parol (Boş buraxıla bilər)", max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
+    username = forms.CharField(label="İstifadəçi Adı", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    address = forms.CharField(label="Adres", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     gender_list = (
         ('Male','Male'),
         ('Female','Female')
     )
-    gender = forms.ChoiceField(label="Gender", choices=gender_list, widget=forms.Select(attrs={"class":"form-control"}))
+    gender = forms.ChoiceField(label="Cin", choices=gender_list, widget=forms.Select(attrs={"class":"form-control"}))
 
     def __init__(self, *args, **kwargs):
         super(EditStudentForm, self).__init__(*args, **kwargs)
-        self.fields['subject_id'] = forms.ModelMultipleChoiceField(label="Subjects", queryset=Subjects.objects.all(), widget=forms.CheckboxSelectMultiple)
-        self.fields['group_id'] = forms.ModelMultipleChoiceField(label="Group", queryset=Group.objects.all(), widget=forms.CheckboxSelectMultiple)
-        self.fields['session_year_id'] = forms.ChoiceField(label="Session Year", choices=[(session_year.id, str(session_year.session_start_year)+" - "+str(session_year.session_end_year)) for session_year in SessionYearModel.objects.all()], widget=forms.Select(attrs={"class":"form-control"}))
+        self.fields['subject_id'] = forms.ModelMultipleChoiceField(label="Fənlər", queryset=Subjects.objects.all(), widget=forms.CheckboxSelectMultiple)
+        self.fields['group_id'] = forms.ModelMultipleChoiceField(label="Qruplar", queryset=Group.objects.all(), widget=forms.CheckboxSelectMultiple)
+        self.fields['session_year_id'] = forms.ChoiceField(label="Sessiya İli", choices=[(session_year.id, str(session_year.session_start_year)+" - "+str(session_year.session_end_year)) for session_year in SessionYearModel.objects.all()], widget=forms.Select(attrs={"class":"form-control"}))

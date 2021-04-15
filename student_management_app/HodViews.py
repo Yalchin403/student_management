@@ -7,9 +7,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 import json
 from .color_generator import generate_colors
-
 from student_management_app.models import CustomUser, Staffs, Group, Subjects, Students, SessionYearModel, FeedBackStudent, FeedBackStaffs, LeaveReportStudent, LeaveReportStaff, Attendance, AttendanceReport
 from .forms import AddStudentForm, EditStudentForm, AddStaffForm, EditStaffForm
+from django.db.models import Q
 
 
 def admin_home(request):
@@ -170,6 +170,24 @@ def manage_staff(request):
     }
     return render(request, "hod_template/manage_staff_template.html", context)
 
+def search_staff(request):
+    if request.method == "GET":
+        if request.GET.get('search'):
+            searched = request.GET.get('search')
+            search_list = request.GET.get('search').split(' ')
+            for search in search_list:
+                objs = Staffs.objects.filter(
+                    Q(admin__first_name__icontains=search) | Q(admin__last_name__icontains=search)
+                    ).distinct()
+
+        else:
+            objs = []
+            searched = "Heyət Axtar"
+        context = {"staffs": objs,
+        "searched": searched,
+        }
+    return render(request, "hod_template/manage_staff_template.html", context)
+
 
 def edit_staff(request, staff_id):
 
@@ -285,6 +303,23 @@ def manage_group(request):
     }
     return render(request, 'hod_template/manage_group_template.html', context)
 
+def search_group(request):
+    if request.method == "GET":
+        if request.GET.get('search'):
+            searched = request.GET.get('search')
+            search_list = request.GET.get('search').split(' ')
+            for search in search_list:
+                objs = Group.objects.filter(
+                    Q(group_name__icontains=search)
+                    ).distinct()
+
+        else:
+            objs = []
+            searched = "Qrup Axtar..."
+        context = {"groups": objs,
+        "searched": searched,
+        }
+    return render(request, "hod_template/manage_group_template.html", context)
 
 def edit_group(request, group_id):
     group = Group.objects.get(id=group_id)
@@ -333,6 +368,23 @@ def manage_session(request):
     }
     return render(request, "hod_template/manage_session_template.html", context)
 
+def search_session(request):
+    if request.method == "GET":
+        if request.GET.get('search'):
+            searched = request.GET.get('search')
+            search_list = request.GET.get('search').split(' ')
+            for search in search_list:
+                objs = SessionYearModel.objects.filter(
+                    Q(session_start_year__icontains=search) | Q(session_end_year__icontains=search)
+                    ).distinct()
+
+        else:
+            objs = []
+            searched = "Sessiya Axtar..."
+        context = {"session_years": objs,
+        "searched": searched,
+        }
+    return render(request, "hod_template/manage_session_template.html", context)
 
 def add_session(request):
     return render(request, "hod_template/add_session_template.html")
@@ -470,6 +522,23 @@ def manage_student(request):
     }
     return render(request, 'hod_template/manage_student_template.html', context)
 
+def search_student(request):
+    if request.method == "GET":
+        if request.GET.get('search'):
+            searched = request.GET.get('search')
+            search_list = request.GET.get('search').split(' ')
+            for search in search_list:
+                objs = Students.objects.filter(
+                    Q(admin__first_name__icontains=search) | Q(admin__last_name__icontains=search)
+                    ).distinct()
+
+        else:
+            objs = []
+            searched = "Tələbə Axtar"
+        context = {"students": objs,
+        "searched": searched,
+        }
+    return render(request, "hod_template/manage_student_template.html", context)
 
 def edit_student(request, student_id):
     # Adding Student ID into Session Variable
@@ -617,6 +686,23 @@ def manage_subject(request):
     }
     return render(request, 'hod_template/manage_subject_template.html', context)
 
+def search_subject(request):
+    if request.method == "GET":
+        if request.GET.get('search'):
+            searched = request.GET.get('search')
+            search_list = request.GET.get('search').split(' ')
+            for search in search_list:
+                objs = Subjects.objects.filter(
+                    Q(subject_name__icontains=search)
+                    ).distinct()
+
+        else:
+            objs = []
+            searched = "F'nn Axtar..."
+        context = {"subjects": objs,
+        "searched": searched,
+        }
+    return render(request, "hod_template/manage_subject_template.html", context)
 
 def edit_subject(request, subject_id):
     subject = Subjects.objects.get(id=subject_id)
